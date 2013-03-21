@@ -1,0 +1,125 @@
+﻿@model BrewBattle.Controllers.HomeController.UserViewModel
+@{
+    ViewBag.Title = "BREW BATTLE!";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        var timerTime, setIntervalInstance;
+        $(function () {
+            $('#rollresults').tablesorter({ headers: { 0: { sorter: false }, 1: { sorter: true }, 2: { sorter: false } } });
+
+            $.connection.hub.logging = true;
+            // Proxy created on the fly          
+            var chat = $.connection.brewBattleHub;
+            // Start the connection
+
+            $.connection.hub.start().done(function () {
+                $("#broadcast").click(function () {
+                    // Call the chat method on the server
+                    chat.server.roll($("#drinkname").val(), $("#comment").val().substr(0, 40));
+                    $("#rollresults").show('slow');
+                    $("#broadcast").prop("disabled", "disabled");
+                    $("#drinkname").prop("disabled", "disabled");
+                    $("#comment").prop("disabled", "disabled");
+                });
+
+                setIntervalInstance = window.setInterval(timerTick, 1000);
+            }).fail(function (reason) {
+                console.log("SignalR connection failed: " + reason);
+                //chat.server.sendMessage(@Model.UserName + " has Error! (Check logs)");
+            });
+
+
+            // Declare a function on the chat hub so the server can invoke it          
+            chat.client.addRoll = function (player, roll, drink, comment) {
+                $("#rollresults").find("tr").eq(1).removeClass('loserrow');
+                $('#rollresults tbody').append('<tr><td>' + player + '</td>' + '<td>' + roll + '</td>' + '<td>' + drink + '</td>' + '<td>' + comment + '</td></tr>');
+                $("#rollresults").trigger("update");
+                $("#rollresults").tablesorter({ sortList: [[1, 0]] });
+                $("#rollresults").find("tr").eq(1).addClass('loserrow');
+            };
+
+            chat.client.addMessage = function (message) {
+                $('#messages').append("<div class='message'>" + message + "</div>");
+            };
+
+            chat.client.resetTimer = function () {
+                timerTime = 30;
+            };
+
+            function timerTick() {
+                if (timerTime > 0) {
+                    timerTime = timerTime - 1;
+                    $('#timer').html("<div>Starting in: " + timerTime + "</div>");
+                    $("#timerbox").show('slow');
+                } else {
+                    clearInterval(setIntervalInstance);
+                    $("#broadcast").removeProp("disabled", "disabled");
+                    $('#timerbox').hide('slow');
+                }
+            }
+        });
+
+    </script>
+}
+
+<div id="maincontent">
+    <div id="titlebox" class="section">
+        <img src="~/Content/coffee.png" />
+        @ViewBag.Title
+    </div>
+
+    <div id="rollcontrols" class="section">
+        <div id="introduction">
+            <h3>Rules:</h3>
+            <p>Choose your drink, then click roll.</p>
+            <p>You will be given a random number between 1 and 1000.</p>
+            <p>Once you have rolled you will be able able to see the results of everyone elses roll.</p>
+            <p>Lowest roller makes the drinks!</p>
+        </div>
+        <select id="drinkname">
+            <option value="Espresso">Espresso</option>
+            <option value="Espresso Decaf">Espresso Decaf</option>
+            <option value="Mocha">Mocha</option>
+            <option value="Mocha Decaf">Mocha Decaf</option>
+            <option value="Water">Water</option>
+            <option value="Fizzy Water">Fizzy Water</option>
+            <option value="Latte">Latte</option>
+            <option value="Latte Decaf">Latte Decaf</option>
+            <option value="Black Coffee">Black Coffee</option>
+            <option value="Black Coffee Decaf">Black Coffee Decaf</option>
+            <option value="Cappuccino">Cappuccino</option>
+            <option value="Cappuccino Decaf">Cappuccino Decaf</option>
+            <option value="Hot Chocolate">Hot Chocolate</option>
+            <option value="Hot Water">Hot Water</option>
+            <option value="Tea">Tea</option>
+            <option value="Instant Coffee">Instant Coffee</option>
+        </select>
+        <input type="text" id="comment" maxlength="40" width="200" placeholder="Comment ..." />
+        <input type="button" id="broadcast" value="Roll" disabled="disabled" />
+    </div>
+
+    <div id="results">
+        <table id="rollresults" class="tablesorter" style="display: none; width: 100%;">
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Roll</th>
+                    <th>Drink</th>
+                    <th>Comment</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<div id="messagebox" class="section">
+    <div id="messages"></div>
+    <div id="timerbox" style="display: none;">
+        <img src="~/Content/clock.png" />
+        <div id="timer"></div>
+    </div>
+</div>
+

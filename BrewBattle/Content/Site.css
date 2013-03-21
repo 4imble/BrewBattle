@@ -1,0 +1,106 @@
+﻿/* tables */
+
+    table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+        background-color: #e6EEEE;
+        border: 1px solid #FFF;
+        padding: 4px;
+    }
+
+    table.tablesorter thead tr .header {
+        background-image: url(bg.gif);
+        background-repeat: no-repeat;
+        background-position: center right;
+    }
+
+    table.tablesorter tbody td {
+        color: #3D3D3D;
+        padding: 4px;
+        background-color: #FFF;
+        vertical-align: top;
+    }
+
+    table.tablesorter tbody tr.odd td {
+        background-color: #F0F0F6;
+    }
+
+    table.tablesorter thead tr .headerSortUp {
+        background-image: url(asc.gif);
+    }
+
+    table.tablesorter thead tr .headerSortDown {
+        background-image: url(desc.gif);
+    }
+
+
+
+body {
+    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+    background-image: url(brewbg.jpg);
+}
+
+
+/*  Gimble Style  */
+.section {
+    color: wheat;
+    margin-left: 2px;
+    margin-top: 2px;
+    float: left;
+    background-color: darkred;
+    padding: 30px 10px;
+}
+
+#titlebox {
+    font-size: 16px;
+    width: 150px;
+}
+
+#maincontent {
+    float: left;
+    text-align: center;
+}
+
+#rollcontrols {
+    padding-top: 0px;
+    width: 560px;
+}
+
+#messagebox {
+    font-size: 13px;
+}
+
+#results {
+    clear: both;
+    text-align: center;
+    padding: 30px 10px;
+    width: 725px;
+}
+
+#introduction {
+    background-color: cornsilk;
+    color: darkslateblue;
+    text-align: left;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+}
+
+#timerbox {
+    margin-top: 4px;
+}
+
+#timerbox img {
+    float: left;
+}
+
+#timer {
+    float: left;
+}
+
+.loserrow {
+    background-color: darkmagenta;
+    font-size: 26px;
+    color: whitesmoke;
+}
+.loserrow td{
+    background-color: darkmagenta;
+    color: whitesmoke;
+}
